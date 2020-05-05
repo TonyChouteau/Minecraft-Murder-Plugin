@@ -1,7 +1,23 @@
 main: fr.tonychouteau.murder.bukkit.MurderPlugin
 name: MurderPlugin
-version: 1.0.5
+version: 0.7.3
 description: Murder
 author: Tony Chouteau
+api-version: 1.13
 commands:
-  
+  murder:
+    description: Commandes du plugin murder
+    usage: /murder help | start | stop
+    permission: permission.murder
+    aliases:
+      - muder help
+      - murder start
+      - murder stop
+  m:
+    description: Commandes du plugin murder
+    usage: /m help | start | stop
+    permission: permission.murder
+    aliases:
+      - m help
+      - m start
+      - m stop
