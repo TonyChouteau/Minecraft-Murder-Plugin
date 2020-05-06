@@ -9,93 +9,122 @@ import java.util.ArrayList;
 
 // Bukkit Import
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
 import org.bukkit.entity.Player;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.Command;
 
-
 //Commands Class
 public class Commands {
-    
-    public static boolean handleCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
-        if ((cmd.getName().equalsIgnoreCase("murder") || cmd.getName().equalsIgnoreCase("m")) && args.length == 1) {
+	public static boolean handleCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
-            switch (args[0]) {
-            case "help":
-                help(sender, cmd, label);
-                return true;
-            case "start":
-                return startGame(sender, cmd, label);
-            case "stop":
-                return stopGame(sender, cmd, label);
-            }
-        }
+		if ((cmd.getName().equalsIgnoreCase("murder") || cmd.getName().equalsIgnoreCase("m")) && args.length >= 1) {
 
-        return false;
-    }
+			switch (args[0]) {
+				case "help":
+					help(sender, cmd, label);
+					return true;
+				case "start":
+					return startGame(sender, cmd, label);
+				case "stop":
+					return stopGame(sender, cmd, label);
+				case "spawnpoint":
+					return setSpawnpoint(sender, cmd, label, args);
+			}
+		}
 
-    public static void help(CommandSender sender, Command cmd, String label){
-        try{
-            Player player = (Player) sender;
-            Tool.pp("/start <nombre_de_joueurs> \n    Lancer une partie\n/stop\n   Arrete la partie en cours", player);
-        } catch (Exception e){
-            Tool.pc("/start <nombre_de_joueurs> \n    Lancer une partie\n/stop\n    Arrete la partie en cours");
-        }
-    }
+		return false;
+	}
 
-    public static boolean startGame(CommandSender sender, Command cmd, String label){
+	public static void help(CommandSender sender, Command cmd, String label) {
+		try {
+			Player player = (Player) sender;
+			Tool.pp("/start <nombre_de_joueurs> \n    Lancer une partie\n/stop\n   Arrete la partie en cours\n/spawnpoint\n   Ajoute un spawnpoint. /spawnpoint <id> <x> <y> <z>",
+					player);
+		} catch (Exception e) {
+			Tool.pc("/start <nombre_de_joueurs> \n    Lancer une partie\n/stop\n    Arrete la partie en cours");
+		}
+	}
 
-        Game game = Game.getGame();
-        if (game!=null){
-            Tool.pc("Error: A game is already started");
-            Tool.pp("Error: A game is already started");
-            return true;
-        }
-        
-        game = new Game();
+	public static boolean startGame(CommandSender sender, Command cmd, String label) {
 
-        Tool.pp(Boolean.toString(game.notEnoughtPlayer()));
-        if (game.notEnoughtPlayer()){
-            Tool.pc("====== The murder party can only start if there are at least 2 players ======");
-            Tool.pp("====== The murder party can only start if there are at least 2 players ======");
-            Game.setGame(null);
-            return true;
-        }
+		Game game = Game.getGame();
+		if (game != null) {
+			Tool.pc("Error: A game is already started");
+			Tool.pp("Error: A game is already started");
+			return true;
+		}
 
-        Tool.pc("====== The murder party starts ======");
-        Tool.pp("====== The murder party starts ======");
+		game = new Game();
 
+		if (game.notEnoughtPlayer()) {
+			Tool.pc("====== The murder party can only start if there are at least 2 players ======");
+			Tool.pp("====== The murder party can only start if there are at least 2 players ======");
+			Game.setGame(null);
+			return true;
+		} else if (game.notEnoughtSpawnPoint()){
+			Tool.pc("====== Please, set spawnpoint(s) using /m spawnpoint <id> <x> <y> <z> to start a game ======");
+			Tool.pp("====== Please, set spawnpoint(s) using /m spawnpoint <id> <x> <y> <z> to start a game ======");
+			Game.setGame(null);
+			return true;
+		}
 
-        game.clearPlayers();
-        
-        //Murderer
-        game.makeTheMurderer();
+		Tool.pc("====== The murder party starts ======");
+		Tool.pp("====== The murder party starts ======");
 
-        //Guardian
-        game.makeTheGuardian();
+		game.clearPlayers();
+		game.playerInAdventureMode();
 
-        return true;
-    }
+		// Murderer
+		game.makeTheMurderer();
 
-    public static boolean stopGame(CommandSender sender, Command cmd, String label){
+		// Guardian
+		game.makeTheGuardian();
 
-        Game game = Game.getGame();
-        if (game==null){
-            Tool.pc("Error: No game started now");
-            Tool.pp("Error: No game started now");
-            return true;
-        }
+		game.spawnPlayers();
 
-        Tool.pc("====== The murder party stops ======");
-        Tool.pp("====== The murder party stops ======");
+		return true;
+	}
 
-        game.teleportPlayersToSpawn();
+	public static boolean stopGame(CommandSender sender, Command cmd, String label) {
 
-        Game.setGame(null);
+		Game game = Game.getGame();
+		if (game == null) {
+			Tool.pc("Error: No game started now");
+			Tool.pp("Error: No game started now");
+			return true;
+		}
 
-        return true;
-    }
+		Tool.pc("====== The murder party stops =======");
+		Tool.pp("====== The murder party stops =======");
+
+		game.teleportPlayersToSpawn();
+		game.clearPlayers();
+
+		Game.setGame(null);
+
+		return true;
+	}
+
+	public static boolean setSpawnpoint(CommandSender sender, Command cmd, String label, String[] args) {
+
+		if (args.length == 5 && Tool.isInteger(args[1]) && Tool.isInteger(args[2]) && Tool.isInteger(args[3]) && Tool.isInteger(args[4])) {
+
+			Game.setSpawnpoint(Integer.parseInt(args[1]), new Location(null, Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4])));
+			
+		} else if (args.length == 3 && (args[2].equals("remove") || args[2].equals("rm"))) {
+
+			if (!Game.deleteSpawnpoint(Integer.parseInt(args[1]))){
+				Tool.pp("This spawnpoint doesn't exist");
+				return false;
+			}
+		} else {
+			return false;
+		}
+		return true;
+
+	}
 }

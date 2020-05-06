@@ -35,7 +35,7 @@ public class PlayerListener implements Listener {
 					game.runnersWin();
 				} else {
 					//BLINDNESS + DROP GUN
-					game.badVictim();
+					game.badVictim(killed);
 				}
 
 			} catch (Exception e) {
@@ -62,5 +62,10 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent event) {
 		event.setDeathMessage("");
+		Player killed = (Player) event.getEntity();
+		Game game = Game.getGame();
+		if (event.getEntity() != game.getMurderer()) {
+			game.playerKilled(killed);
+		}
 	}
 }

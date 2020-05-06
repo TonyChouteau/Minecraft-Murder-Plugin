@@ -1,8 +1,10 @@
 package fr.tonychouteau.murder.bukkit.util;
 
 // Java Import
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 // Bukkit Import
 import org.bukkit.Bukkit;
@@ -24,6 +26,16 @@ public class Tool {
         }
     }
 
+    public static int getRandomNumberInRange(int min, int max) {
+
+        if (min > max) {
+            throw new IllegalArgumentException("max must be greater than min");
+        }
+    
+        Random r = new Random();
+        return r.nextInt(max - min) + min;
+    }
+
     public static void pc(String str){
         Bukkit.getLogger().info(str);
     }
@@ -39,9 +51,8 @@ public class Tool {
         player.sendMessage(str);
     }
 
-    public static ArrayList<Player> getPlayersShuffled(){
-        ArrayList<Player> listOfPlayers = new ArrayList<>(Bukkit.getOnlinePlayers());
-        Collections.shuffle(listOfPlayers);
-        return listOfPlayers;
+    public static ArrayList shuffleArray(ArrayList array){
+        Collections.shuffle(array);
+        return array;
     }
 }
