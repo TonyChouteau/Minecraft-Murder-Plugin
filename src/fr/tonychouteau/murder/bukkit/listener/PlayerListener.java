@@ -83,11 +83,4 @@ public class PlayerListener implements Listener {
 			event.setDamage(0);
 		}
 	}
-	/*
-	@EventHandler
-	public void onPlayerTag(PlayerReceiveNameTagEvent e) {
-			Player player = e.getNamedPlayer();
-			e.setTag(ChatColor.GOLD + "");
-	}
-	*/
 }

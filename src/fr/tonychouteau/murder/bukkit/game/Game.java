@@ -39,6 +39,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.Team.Option;
+import org.bukkit.scoreboard.Team.OptionStatus;
 
 // Class Definition
 public class Game {
@@ -73,7 +75,7 @@ public class Game {
 	private ArrayList<Player> deadPlayers;
 
 	private ScoreboardManager manager = Bukkit.getScoreboardManager();
-	private Scoreboard board = manager.getNewScoreboard();
+	private Scoreboard board = manager.getMainScoreboard();
 	private Team team;
 
 	public Game() {
@@ -86,13 +88,18 @@ public class Game {
 		}
 		this.playersAlive.remove(this.murderer);
 		this.initGame();
-
-		team = board.registerNewTeam("murder-game");
-		for (Player p : this.players) {
-			team.addEntry(p.getName());
-			p.setPlayerListName(ChatColor.WHITE + p.getName());
+		
+		try {
+			team = board.registerNewTeam("murder-game");
+		} catch (IllegalArgumentException e){
+			team = board.getTeam("murder-game");
 		}
-		team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
+
+			for (Player p : this.players) {
+				team.addEntry(p.getName());
+				p.setPlayerListName(ChatColor.WHITE + "");
+			}
+			team.setOption(Option.NAME_TAG_VISIBILITY, OptionStatus.NEVER);
 
 		Game.setGame(this);
 	}
@@ -233,7 +240,7 @@ public class Game {
 
 	public void playerKilled(Player killed, Player killer){
 		killed.setGameMode(GameMode.SPECTATOR);
-		killed.setPlayerListName(ChatColor.WHITE + killed.getName());
+		killed.setPlayerListName(ChatColor.WHITE + "");
 		killed.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 3*20, 255, true, false));
 		killed.sendTitle("You're dead",	  null, 1*20, 2*20, 1*20);
 
