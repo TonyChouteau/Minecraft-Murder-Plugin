@@ -10,10 +10,14 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.UUID;
 
+import java.lang.InterruptedException;
+
 // Bukkit Import
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.ChatColor;
 
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffectType;
@@ -31,6 +35,10 @@ import org.bukkit.attribute.AttributeModifier.Operation;
 import org.bukkit.enchantments.Enchantment;
 
 import org.bukkit.entity.Player;
+
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 // Class Definition
 public class Game {
@@ -59,19 +67,32 @@ public class Game {
 	}
 
 	private ArrayList<Player> players;
+	private ArrayList<Player> playersAlive;
 	private Player murderer;
 	private Player guardian;
-	private int guardianId = 1;
 	private ArrayList<Player> deadPlayers;
+
+	private ScoreboardManager manager = Bukkit.getScoreboardManager();
+	private Scoreboard board = manager.getNewScoreboard();
+	private Team team;
 
 	public Game() {
 		this.players = Tool.shuffleArray(new ArrayList<Player>(Bukkit.getOnlinePlayers()));
+		this.playersAlive = Tool.shuffleArray(new ArrayList<Player>(players));
 		this.deadPlayers = new ArrayList<>(0);
 		if (!notEnoughtPlayer()) {
 			this.murderer = players.get(0);
 			this.guardian = players.get(1);
 		}
+		this.playersAlive.remove(this.murderer);
 		this.initGame();
+
+		team = board.registerNewTeam("murder-game");
+		for (Player p : this.players) {
+			team.addEntry(p.getName());
+			p.setPlayerListName(ChatColor.WHITE + p.getName());
+		}
+		team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
 
 		Game.setGame(this);
 	}
@@ -179,47 +200,66 @@ public class Game {
 	}
 
 	public void runnersWin(){
-		Game game = Game.getGame();
-		
         Tool.pc("======    The Innocents Win    ======");
         Tool.pp("======    The Innocents Win    ======");
 
-        game.teleportPlayersToSpawn();
-		game.clearPlayers();
+        this.teleportPlayersToSpawn();
+		this.clearPlayers(); 
+		this.playerInAdventureMode();
 
         Game.setGame(null);
 	}
 
 	public void badVictim(Player innocent){
-		Tool.pp(innocent.getName()+" était Innocent");
-		guardian.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 5*20, 255, true, false));
+		Tool.pp(innocent.getName()+" was innocent, U SON OF A BITCH !");
+		this.guardian.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 5*20, 255, true, false));
 	}
 
-	public void guardianKilled(){
-		guardian.getInventory().clear();
-		guardianId++;
-		guardian = players.get(guardianId);
-		makeTheGuardian();
+	public void changeGuardian(){
+		this.guardian.getInventory().clear();
+		Tool.timeout(5, new Runnable(){
+			@Override
+			public void run() {
+				Game game = Game.getGame();
+				ArrayList<Player> alive = new ArrayList<Player>(playersAlive);
+				if (alive.size() >= 2){
+					alive.remove(game.guardian);
+				}
+				game.guardian = alive.get(0);
+				makeTheGuardian();
+			}
+		});
+	}
+
+	public void playerKilled(Player killed, Player killer){
+		killed.setGameMode(GameMode.SPECTATOR);
+		killed.setPlayerListName(ChatColor.WHITE + killed.getName());
+		killed.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 3*20, 255, true, false));
+		killed.sendTitle("You're dead",	  null, 1*20, 2*20, 1*20);
+
+		if (!deadPlayers.contains(killed)){
+			deadPlayers.add(killed);
+			playersAlive.remove(killed);
+		}
+		if (deadPlayers.size() == players.size()-1) {
+			this.murdererWins();
+		} else if (killed == this.guardian || (killed != this.murderer && killer == this.guardian)) {
+			this.changeGuardian();
+		}
 	}
 
 	public void playerKilled(Player killed){
-		if (!deadPlayers.contains(killed)){
-			deadPlayers.add(killed);
-		}
-		if (deadPlayers.size() == players.size()-1) {
-			Tool.pc("======    The Murderer Wins    ======");
-			Tool.pp("======    The Murderer Wins    ======");
-
-			game.teleportPlayersToSpawn();
-			game.clearPlayers();
-	
-			Game.setGame(null);
-		} else {
-			guardianKilled();
-		}
+		playerKilled(killed, null);
 	}
 
 	public void murdererWins(){
-		//TODO
+		Tool.pc("======    The Murderer Wins    ======");
+		Tool.pp("======    The Murderer Wins    ======");
+
+		this.teleportPlayersToSpawn();
+		this.clearPlayers();
+		this.playerInAdventureMode();
+
+		Game.setGame(null);
 	}
 }

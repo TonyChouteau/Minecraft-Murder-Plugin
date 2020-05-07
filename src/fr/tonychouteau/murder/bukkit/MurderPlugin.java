@@ -3,6 +3,7 @@ package fr.tonychouteau.murder.bukkit;
 // My Package
 import fr.tonychouteau.murder.bukkit.listener.PlayerListener;
 import fr.tonychouteau.murder.bukkit.commands.Commands;
+import fr.tonychouteau.murder.bukkit.util.Tool;
 
 // Java Import
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class MurderPlugin extends JavaPlugin {
 		pm.registerEvents(l, this);
 
 		getLogger().info("Le plugin s'est bien chargé.");
+		Tool.setPlugin(this);	
 	}
 
 	@Override

@@ -8,12 +8,23 @@ import java.util.Random;
 
 // Bukkit Import
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 
 import org.bukkit.entity.Player;
 
 import org.bukkit.Location;
 
 public class Tool {
+
+	private static Plugin murderPlugin;
+
+    public static void setPlugin(Plugin plugin) {
+		murderPlugin = plugin;
+	}
+
+	public static Plugin getPlugin() {
+		return murderPlugin;
+	}
     
     public static boolean isInteger(String str){
         try {
@@ -54,5 +65,10 @@ public class Tool {
     public static ArrayList shuffleArray(ArrayList array){
         Collections.shuffle(array);
         return array;
+    }
+    
+    public static void timeout(int seconds, Runnable runObject){
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(getPlugin(), runObject, (seconds * 20)); // Always multiply by twenty because that's the amount of ticks in Minecraft
+        
     }
 }
