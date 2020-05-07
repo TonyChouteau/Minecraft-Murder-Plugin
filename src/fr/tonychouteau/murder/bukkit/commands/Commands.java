@@ -2,6 +2,8 @@ package fr.tonychouteau.murder.bukkit.commands;
 
 // My Package
 import fr.tonychouteau.murder.bukkit.util.Tool;
+import fr.tonychouteau.murder.bukkit.util.MyRunnable;
+
 import fr.tonychouteau.murder.bukkit.game.Game;
 
 // Java Import
@@ -9,6 +11,7 @@ import java.util.ArrayList;
 
 // Bukkit Import
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
 import org.bukkit.entity.Player;
@@ -42,10 +45,10 @@ public class Commands {
 	public static void help(CommandSender sender, Command cmd, String label) {
 		try {
 			Player player = (Player) sender;
-			Tool.pp("/start <nombre_de_joueurs> \n    Lancer une partie\n/stop\n   Arrete la partie en cours\n/spawnpoint\n   Ajoute un spawnpoint. /spawnpoint <id> <x> <y> <z>",
+			Tool.pp(ChatColor.GREEN+"/start <nombre_de_joueurs> \n    Lancer une partie\n/stop\n   Arrete la partie en cours\n/spawnpoint\n   Ajoute un spawnpoint. /spawnpoint <id> <x> <y> <z>",
 					player);
 		} catch (Exception e) {
-			Tool.pc("/start <nombre_de_joueurs> \n    Lancer une partie\n/stop\n    Arrete la partie en cours");
+			Tool.pc(ChatColor.GREEN+"/start <nombre_de_joueurs> \n    Lancer une partie\n/stop\n    Arrete la partie en cours\n/spawnpoint\n   Ajoute un spawnpoint. /spawnpoint <id> <x> <y> <z>");
 		}
 	}
 
@@ -53,38 +56,54 @@ public class Commands {
 
 		Game game = Game.getGame();
 		if (game != null) {
-			Tool.pc("Error: A game is already started");
-			Tool.pp("Error: A game is already started");
+			Tool.pc(ChatColor.RED+"Error: A game is already started");
+			Tool.pp(ChatColor.RED+"Error: A game is already started");
 			return true;
 		}
 
 		game = new Game();
 
 		if (game.notEnoughtPlayer()) {
-			Tool.pc("====== The murder party can only start if there are at least 2 players ======");
-			Tool.pp("====== The murder party can only start if there are at least 2 players ======");
+			Tool.pc(ChatColor.RED+"Error: The murder game can only start if there are at least 2 players");
+			Tool.pp(ChatColor.RED+"Error: The murder game can only start if there are at least 2 players");
 			Game.setGame(null);
 			return true;
 		} else if (game.notEnoughtSpawnPoint()){
-			Tool.pc("====== Please, set spawnpoint(s) using /m spawnpoint <id> <x> <y> <z> to start a game ======");
-			Tool.pp("====== Please, set spawnpoint(s) using /m spawnpoint <id> <x> <y> <z> to start a game ======");
+			Tool.pc(ChatColor.RED+"Error: Please, set spawnpoint(s) using /m spawnpoint <id> <x> <y> <z> to start a game");
+			Tool.pp(ChatColor.RED+"Error: Please, set spawnpoint(s) using /m spawnpoint <id> <x> <y> <z> to start a game");
 			Game.setGame(null);
 			return true;
 		}
 
-		Tool.pc("====== The murder party starts ======");
-		Tool.pp("====== The murder party starts ======");
+		Tool.tp(ChatColor.BLUE, "Game sarting in 5s", ChatColor.WHITE, "You are a simple innocent", 1, 1, 0);
+		Tool.tp(ChatColor.BLUE, "Game starting in 5s", ChatColor.RED, "You are the Murderer", game.getMurderer(), 1, 1, 0);
+		Tool.tp(ChatColor.BLUE, "Game starting in 5s", ChatColor.GREEN, "You are the Guardian", game.getGuardian(), 1, 1, 0);
 
+		game.spawnPlayers();
 		game.clearPlayers();
 		game.playerInAdventureMode();
 
-		// Murderer
-		game.makeTheMurderer();
+		MyRunnable myRunnable = new MyRunnable(){
 
-		// Guardian
-		game.makeTheGuardian();
+			@Override
+			public void run() {
+				Tool.tp(ChatColor.BLUE, "Game starting in "+times+"s", ChatColor.WHITE, "You are a simple innocent", 0, 1, 1);
+				Tool.tp(ChatColor.BLUE, "Game starting in "+times+"s", ChatColor.RED, "You are the Murderer", game.getMurderer(), 0, 1, 1);
+				Tool.tp(ChatColor.BLUE, "Game starting in "+times+"s", ChatColor.GREEN, "You are the Guardian", game.getGuardian(), 0, 1, 1);
+			}
+		};
+		myRunnable.setGame(game);
 
-		game.spawnPlayers();
+		Tool.interval(1, 4, myRunnable);
+
+		Tool.timeout(5, new Runnable(){
+			@Override
+			public void run() {
+				Game game = Game.getGame();
+				game.makeTheMurderer();
+				game.makeTheGuardian();
+			}
+		});
 
 		return true;
 	}
@@ -93,16 +112,15 @@ public class Commands {
 
 		Game game = Game.getGame();
 		if (game == null) {
-			Tool.pc("Error: No game started now");
-			Tool.pp("Error: No game started now");
+			Tool.pc(ChatColor.RED+"Error: No game started now");
 			return true;
 		}
 
-		Tool.pc("====== The murder party stops =======");
-		Tool.pp("====== The murder party stops =======");
+		Tool.tp(ChatColor.BLUE, "The murder game stops");
 
 		game.teleportPlayersToSpawn();
 		game.clearPlayers();
+		game.playerInAdventureMode();
 
 		Game.setGame(null);
 
@@ -118,7 +136,7 @@ public class Commands {
 		} else if (args.length == 3 && (args[2].equals("remove") || args[2].equals("rm"))) {
 
 			if (!Game.deleteSpawnpoint(Integer.parseInt(args[1]))){
-				Tool.pp("This spawnpoint doesn't exist");
+				Tool.pp(ChatColor.RED+"This spawnpoint doesn't exist");
 				return false;
 			}
 		} else {

@@ -79,9 +79,11 @@ public class Game {
 	private Team team;
 
 	public Game() {
+
 		this.players = Tool.shuffleArray(new ArrayList<Player>(Bukkit.getOnlinePlayers()));
 		this.playersAlive = Tool.shuffleArray(new ArrayList<Player>(players));
 		this.deadPlayers = new ArrayList<>(0);
+
 		if (!notEnoughtPlayer()) {
 			this.murderer = players.get(0);
 			this.guardian = players.get(1);
@@ -95,13 +97,17 @@ public class Game {
 			team = board.getTeam("murder-game");
 		}
 
-			for (Player p : this.players) {
-				team.addEntry(p.getName());
-				p.setPlayerListName(ChatColor.WHITE + "");
-			}
-			team.setOption(Option.NAME_TAG_VISIBILITY, OptionStatus.NEVER);
+		for (Player p : this.players) {
+			team.addEntry(p.getName());
+			p.setPlayerListName(ChatColor.WHITE + "");
+		}
+		team.setOption(Option.NAME_TAG_VISIBILITY, OptionStatus.NEVER);
 
 		Game.setGame(this);
+	}
+
+	public ArrayList<Player> getPlayers() {
+		return this.players;
 	}
 
 	public void initGame(){
@@ -207,8 +213,7 @@ public class Game {
 	}
 
 	public void runnersWin(){
-        Tool.pc("======    The Innocents Win    ======");
-        Tool.pp("======    The Innocents Win    ======");
+		Tool.tp(ChatColor.GREEN, "Innocents win !", ChatColor.WHITE, "The Murderer was "+ChatColor.RED+""+game.getMurderer().getName());
 
         this.teleportPlayersToSpawn();
 		this.clearPlayers(); 
@@ -218,7 +223,8 @@ public class Game {
 	}
 
 	public void badVictim(Player innocent){
-		Tool.pp(innocent.getName()+" was innocent, U SON OF A BITCH !");
+		Tool.pp(ChatColor.BLUE + innocent.getName()+" was innocent");
+		Tool.tp(ChatColor.WHITE, innocent.getName()+""+ChatColor.RED+" was innocent", this.guardian);
 		this.guardian.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 5*20, 255, true, false));
 	}
 
@@ -242,7 +248,7 @@ public class Game {
 		killed.setGameMode(GameMode.SPECTATOR);
 		killed.setPlayerListName(ChatColor.WHITE + "");
 		killed.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 3*20, 255, true, false));
-		killed.sendTitle("You're dead",	  null, 1*20, 2*20, 1*20);
+		Tool.tp(ChatColor.RED, "You're dead", ChatColor.WHITE, "You have been killed", killed);
 
 		if (!deadPlayers.contains(killed)){
 			deadPlayers.add(killed);
@@ -260,8 +266,7 @@ public class Game {
 	}
 
 	public void murdererWins(){
-		Tool.pc("======    The Murderer Wins    ======");
-		Tool.pp("======    The Murderer Wins    ======");
+		Tool.tp(ChatColor.RED, "Murderer wins !", ChatColor.WHITE, "The Murderer was "+ChatColor.RED+""+game.getMurderer().getName());
 
 		this.teleportPlayersToSpawn();
 		this.clearPlayers();
