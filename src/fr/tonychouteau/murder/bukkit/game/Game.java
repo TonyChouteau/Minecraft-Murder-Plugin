@@ -47,6 +47,7 @@ public class Game {
 
 	private static Game game = null;
 	private static Map<Integer, Location> spawnpoints = new HashMap<>(0);
+	private static ItemStack knifeStack = null; 
 
 	public static void setGame(Game newGame) {
 		game = newGame;
@@ -54,6 +55,10 @@ public class Game {
 
 	public static Game getGame() {
 		return game;
+	}
+
+	public static ItemStack getKnifeStack() {
+		return knifeStack;
 	}
 
 	public static void setSpawnpoint(int id, Location location){
@@ -186,6 +191,7 @@ public class Game {
 
 		murderer.getInventory().setHeldItemSlot(1);
 		murderer.getInventory().setItem(0, knifeStack);
+		Game.knifeStack = knifeStack;
 	}
 
 	public void makeTheGuardian() {

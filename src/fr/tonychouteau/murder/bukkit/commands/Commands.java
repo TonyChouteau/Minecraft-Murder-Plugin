@@ -15,6 +15,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.Command;
@@ -95,6 +97,19 @@ public class Commands {
 		myRunnable.setGame(game);
 
 		Tool.interval(1, 4, myRunnable);
+
+		MyRunnable glowingRunnable = new MyRunnable() {
+
+			@Override
+			public void run() {
+				ArrayList<Player> players = Game.getGame().getPlayers();
+				for (Player player: players) {
+					player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 50, 1));
+				}
+			}
+		};
+
+		Tool.interval(30, 1000000, glowingRunnable);
 
 		Tool.timeout(5, new Runnable(){
 			@Override

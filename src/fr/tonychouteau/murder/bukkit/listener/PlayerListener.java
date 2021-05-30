@@ -53,9 +53,10 @@ public class PlayerListener implements Listener {
 
 	@EventHandler
 	public void onPlayerAttack(EntityDamageByEntityEvent event) {
-
-		if (event.getDamage() >= 20) {
-			if (event.getEntity() instanceof Player && event.getDamager() instanceof Player) {
+		if (event.getEntity() instanceof Player && event.getDamager() instanceof Player) {
+			Player murderer =  Game.getGame().getMurderer();
+			if (event.getDamager() == murderer && murderer.getInventory().getItemInMainHand().getAmount() == 1) {
+				
 				Player killed = (Player) event.getEntity();
 				event.setDamage(0);
 
