@@ -38,6 +38,8 @@ public class Commands {
 					return stopGame(sender, cmd, label);
 				case "spawnpoint":
 					return setSpawnpoint(sender, cmd, label, args);
+				case "addSpawnpointHere":
+					return addSpawnpointOnPlayer(sender, cmd, label);
 			}
 		}
 
@@ -159,5 +161,19 @@ public class Commands {
 		}
 		return true;
 
+	}
+
+	public static boolean addSpawnpointOnPlayer(CommandSender sender, Command cmd, String label) {
+		if (!(sender instanceof Player)) {
+			return false;
+		}
+
+		Player player = (Player) sender;
+		Location newLocation = player.getLocation();
+		newLocation.add(0, 1, 0);
+
+		Game.setSpawnpoint(Game.getNextSpawnpointId(), newLocation);
+
+		return true;
 	}
 }

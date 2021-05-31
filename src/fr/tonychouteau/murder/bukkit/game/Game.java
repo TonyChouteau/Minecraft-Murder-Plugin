@@ -65,6 +65,14 @@ public class Game {
 		spawnpoints.put(id, location);
 	}
 
+	public static int getNextSpawnpointId() {
+		int unusedIndex = 0;
+		while (spawnpoints.containsKey(unusedIndex)) {
+			unusedIndex++;
+		}
+		return unusedIndex;
+	}
+
 	public static boolean deleteSpawnpoint(int id){
 		if (!spawnpoints.containsKey(id)){
 			return false;
