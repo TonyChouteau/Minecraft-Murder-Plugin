@@ -12,7 +12,8 @@ Type in the game "/reload" or "reload" in the server console to load the plugin 
 
 ## Usage
 
-To use it, you need to set up spawnpoint on your map, with the command "/spawnpoint <id> <x> <y> <z>".
+To use it, you need to set up spawnpoint on your map, with the command "/m spawnpoint <id> <x> <y> <z>".
+You can also use the small version : "/m addSpawnpointHere" to add a spawnpoint on the player position.
 The plugin need only one spawnpoint to start. I advise you to define as many spawnpoints as there are players (or more).
 
 Then, you can type "/m start" to start the game, and all online players will be teleported randomly to the spawnpoint.
