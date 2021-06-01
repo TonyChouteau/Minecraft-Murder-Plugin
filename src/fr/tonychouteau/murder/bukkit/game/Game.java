@@ -2,6 +2,7 @@ package fr.tonychouteau.murder.bukkit.game;
 
 // My Package
 import fr.tonychouteau.murder.bukkit.util.Tool;
+import fr.tonychouteau.murder.bukkit.util.MyRunnable;
 
 // Java Import
 import java.util.List;
@@ -48,6 +49,15 @@ public class Game {
 	private static Game game = null;
 	private static Map<Integer, Location> spawnpoints = new HashMap<>(0);
 	private static ItemStack knifeStack = null; 
+	private static MyRunnable glowingRunnable = null;
+
+	public static void setGlowingRunnable(MyRunnable runnable) {
+		glowingRunnable = runnable;
+	}
+
+	public static void stopGlowingRunnable() {
+		glowingRunnable.stop();
+	}
 
 	public static void setGame(Game newGame) {
 		game = newGame;
@@ -233,6 +243,7 @@ public class Game {
 		this.clearPlayers(); 
 		this.playerInAdventureMode();
 
+		Game.stopGlowingRunnable();
         Game.setGame(null);
 	}
 
@@ -286,6 +297,7 @@ public class Game {
 		this.clearPlayers();
 		this.playerInAdventureMode();
 
+		Game.stopGlowingRunnable();
 		Game.setGame(null);
 	}
 }

@@ -113,9 +113,11 @@ public class Tool {
 
 			@Override
 			public void run() {
-				runObject.run();
-				if (times > 0) {
-					interval(seconds, times - 1, runObject);
+				if (!runObject.isStopped()) {
+					runObject.run();
+					if (times > 0) {
+						interval(seconds, times - 1, runObject);
+					}
 				}
 			}
 		}, (seconds * 20));
