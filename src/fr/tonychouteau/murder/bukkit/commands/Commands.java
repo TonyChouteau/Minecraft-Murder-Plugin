@@ -8,6 +8,11 @@ import fr.tonychouteau.murder.bukkit.game.Game;
 
 // Java Import
 import java.util.ArrayList;
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
+import java.io.FileWriter;
+import java.io.FileReader;
 
 // Bukkit Import
 import org.bukkit.Bukkit;
@@ -37,9 +42,17 @@ public class Commands {
 				case "stop":
 					return stopGame(sender, cmd, label);
 				case "spawnpoint":
+				case "sp":
 					return setSpawnpoint(sender, cmd, label, args);
 				case "addSpawnpointHere":
+				case "add":
 					return addSpawnpointOnPlayer(sender, cmd, label);
+				case "saveSpawnpoints":
+				case "save":
+					return saveSpawnpoints(sender, cmd, label);
+				case "loadSpawnpoints":
+				case "load":
+					return loadSpawnpoints(sender, cmd, label);
 			}
 		}
 
@@ -50,7 +63,18 @@ public class Commands {
 		try {
 			Player player = (Player) sender;
 			Tool.pp(ChatColor.GREEN
-					+ "/start <nombre_de_joueurs> \n    Lancer une partie\n/stop\n   Arrete la partie en cours\n/spawnpoint\n   Ajoute un spawnpoint. /spawnpoint <id> <x> <y> <z>",
+					+ "/m start <nombre_de_joueurs>\n"
+					+ "   Lancer une partie\n"
+					+ "/m stop\n"
+					+ "   Arrete la partie en cours\n"
+					+ "/m spawnpoint | sp\n"
+					+ "   Ajoute un spawnpoint. /m spawnpoint|sp <id> <x> <y> <z>\n"
+					+ "/m addSpawnpointHere | add\n"
+					+ "   Ajoute un spawnpoint a l'endroit ou se trouve le joueur\n"
+					+ "/m saveSpawnpoints | save\n"
+					+ "   Save spawnpoints in a file\n"
+					+ "/m loadSpawnpoints | load\n"
+					+ "   Load spawnpoints from the save file\n",
 					player);
 		} catch (Exception e) {
 			Tool.pc(ChatColor.GREEN
@@ -122,7 +146,7 @@ public class Commands {
 
 		Game.setGlowingRunnable(glowingRunnable);
 
-		Tool.interval(30, 1000000, glowingRunnable);
+		Tool.interval(3 * 60, 1000000, glowingRunnable);
 
 		Tool.timeout(5, new Runnable() {
 			@Override
@@ -194,8 +218,61 @@ public class Commands {
 		int id = Game.getNextSpawnpointId();
 		Tool.pp(ChatColor.GREEN + "Spawnpoint " + id + " created");
 
-		Game.setSpawnpoint(Game.getNextSpawnpointId(), newLocation);
+		Game.setSpawnpoint(id, newLocation);
 
+		return true;
+	}
+
+	public static boolean saveSpawnpoints(CommandSender sender, Command cmd, String label) {
+		Map<Integer, Location> spawnpoints = Game.getSpawnPoints();
+		try {
+			File file = new File("./plugins/MurderPlugin/murder_plugin.save");
+			file.createNewFile();
+
+			FileWriter fileWriter = new FileWriter(file);
+			String saveString = "";
+			for (int id : spawnpoints.keySet()) {
+				Location location = spawnpoints.get(id);
+
+				saveString += location.getBlockX() + ":" + location.getBlockY() + ":" + location.getBlockZ() + "-";
+			}
+			fileWriter.write(saveString);
+			fileWriter.close();
+
+			Tool.pp("Saved successfully");
+		} catch (IOException e) {
+			Tool.pp("Spawnpoints can't be saved");
+		}
+		return true;
+	}
+
+	public static boolean loadSpawnpoints(CommandSender sender, Command cmd, String label) {
+		File file = new File("./plugins/MurderPlugin/murder_plugin.save");
+
+		try (FileReader fr = new FileReader(file)) {
+			char[] chars = new char[(int) file.length()];
+			fr.read(chars);
+
+			String fileContent = new String(chars);
+			String[] spawnpointsData = fileContent.split("-");
+			if (spawnpointsData.length >= 1) {
+				Game.getSpawnPoints().clear();
+			}
+			int count = 0;
+			for (String spawnpointData: spawnpointsData) {
+				String[] data = spawnpointData.split(":");
+				Location location = new Location(null, Integer.parseInt(data[0]), Integer.parseInt(data[1]),
+						Integer.parseInt(data[2]));
+				int id = Game.getNextSpawnpointId();
+
+				Game.setSpawnpoint(id, location);
+				count++;
+			}
+			Tool.pp(ChatColor.GREEN + "" + count + " spawnpoints loaded");
+		} catch (IOException e) {
+			Tool.pp(ChatColor.RED + "An error occurred while loading the backup.");
+			return false;
+		}
 		return true;
 	}
 }

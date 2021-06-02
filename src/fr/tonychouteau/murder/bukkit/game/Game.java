@@ -75,6 +75,10 @@ public class Game {
 		spawnpoints.put(id, location);
 	}
 
+	public static Map<Integer, Location> getSpawnPoints() {
+		return spawnpoints;
+	}
+
 	public static int getNextSpawnpointId() {
 		int unusedIndex = 0;
 		while (spawnpoints.containsKey(unusedIndex)) {

@@ -7,19 +7,25 @@ api-version: 1.13
 commands:
   murder:
     description: Commandes du plugin murder
-    usage: /murder help | spawnpoint | start | stop
+    usage: /murder help | spawnpoint | start | stop | addSpawnpointHere | saveSpawnpoints | loadSpawnpoints
     permission: permission.murder
     aliases:
       - muder help
       - murder start
       - murder stop
       - murder spawnpoint
+      - murder addSpawnpointHere
+      - murder saveSpawnpoints
+      - murder loadSpawnpoints
   m:
     description: Commandes du plugin murder
-    usage: /m help | spawnpoint | start | stop
+    usage: /m help | sp | start | stop | add | save | load
     permission: permission.murder
     aliases:
       - m help
       - m start
       - m stop
       - m sp
+      - m add
+      - m save
+      - m load
