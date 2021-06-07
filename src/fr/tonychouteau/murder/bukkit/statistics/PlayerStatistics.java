@@ -18,7 +18,8 @@ public class PlayerStatistics {
 	public int totalPoints = 0;
 	public int currentPoints = 0;
 
-	public PlayerStatistics() {}
+	public PlayerStatistics() {
+	}
 
 	public PlayerStatistics(String[] data) {
 		gameCount = Integer.parseInt(data[1]);
@@ -31,6 +32,23 @@ public class PlayerStatistics {
 	}
 
 	public String getStringSave() {
-		return gameCount+":"+gameCountAsMurderer+":"+winAsMurderer+":"+winAsGuardian+":"+winAsInnocent+":"+totalPoints+":"+currentPoints;
+		return gameCount + ":" + gameCountAsMurderer + ":" + winAsMurderer + ":" + winAsGuardian + ":" + winAsInnocent
+				+ ":" + totalPoints + ":" + currentPoints;
+	}
+
+	public String getDisplay() {
+		return "=================================\nGame count : " + gameCount + "\nGame count as murderer : "
+				+ gameCountAsMurderer + "\nWin as murderer : " + winAsMurderer + "\nWin as innocent : " + winAsInnocent
+				+ "\nWin as guardian : " + winAsGuardian + "\nCurrent points : " + currentPoints + "\nTotal points : "
+				+ totalPoints + "\n=================================";
+	}
+
+	public void addPoints(int points) {
+		totalPoints += points;
+		currentPoints += points;
+	}
+
+	public void clearPoints() {
+		currentPoints = 0;
 	}
 }

@@ -37,6 +37,11 @@ public class Statistics {
 		playerStats.put(data[0], new PlayerStatistics(data));
 	}
 
+	public void addPlayerPoints(Player p, int points) {
+		PlayerStatistics stats = playerStats.get(p.getName());
+		stats.addPoints(points);
+	}
+
 	public void addPlayer(Player p) {
 		String name = p.getName();
 		if (!playerStats.containsKey(name)) {
@@ -79,10 +84,8 @@ public class Statistics {
 		String content = Tool.loadString("plugin.stats");
 
 		if (content == null || content.equals("")) {
-			boolean result = savePluginStats();
-			if (!result) {
-				return;
-			}
+			savePluginStats();
+			return;
 		}
 
 		gameCount = Integer.parseInt(content);
@@ -99,11 +102,7 @@ public class Statistics {
 			for (Player p: Bukkit.getOnlinePlayers()) {
 				addPlayer(p);
 			}
-
-			boolean result = savePlayersStats();
-			if (!result) {
-				return;
-			}
+			return;
 		}
 
 		String[] playerDatas = content.split("-");

@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.EventHandler;
 
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 // Class Defintion
@@ -54,15 +55,19 @@ public class PlayerListener implements Listener {
 	public void onPlayerAttack(EntityDamageByEntityEvent event) {
 		if (event.getEntity() instanceof Player && event.getDamager() instanceof Player) {
 			Player murderer =  Game.getGame().getMurderer();
-			if (event.getDamager() == murderer && murderer.getInventory().getItemInMainHand().getAmount() == 1) {
+			Player guardian =  Game.getGame().getGuardian();
+			if (event.getDamager() == murderer && murderer.getInventory().getItemInMainHand().getType() == Material.IRON_SWORD) {
 				
 				Player killed = (Player) event.getEntity();
 				event.setDamage(0);
 
 				Game game = Game.getGame();
 				if (event.getEntity() != game.getMurderer()) {
-					game.playerKilled(killed);
+					game.playerKilled(killed, game.getMurderer());
 				}
+			}
+			if (event.getDamager() != guardian && event.getEntity() == murderer) {
+				Game.getGame().addPointToPlayer((Player) event.getDamager(), Game.POINTS_PUNCH);
 			}
 		}
 	}

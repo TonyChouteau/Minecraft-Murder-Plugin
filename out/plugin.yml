@@ -1,6 +1,6 @@
 main: fr.tonychouteau.murder.bukkit.MurderPlugin
 name: MurderPlugin
-version: 1.4
+version: 1.5
 description: Murder
 author: Tony Chouteau
 api-version: 1.13

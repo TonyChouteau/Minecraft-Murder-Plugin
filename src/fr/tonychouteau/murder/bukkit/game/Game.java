@@ -44,6 +44,16 @@ public class Game {
 	public static int INNOCENT_WINS = 0;
 	public static int MURDERER_WINS = 1;
 
+	public static float POINTS_MURDERER_KILL = 1; //
+	public static float POINTS_MURDERER_KILL_GUARDIAN = 2; //
+	public static float POINTS_MURDERER_WINS = 2; //
+
+	public static float POINTS_GUARDIAN_KILL_MURDERER = 2; //
+	public static float POINTS_INNOCENTS_WIN = 2; //
+	public static float POINTS_PUNCH = 0.5f; //
+
+	public static float POINTS_GUARDIAN_KILLS_INNOCENT = -1; //
+
 	private static Game game = null;
 	private static Map<Integer, Location> spawnpoints = new HashMap<>(0);
 	private static ItemStack knifeStack = null; 
@@ -99,6 +109,8 @@ public class Game {
 	private Player guardian;
 	private ArrayList<Player> deadPlayers;
 
+	private Map<Player, Float> playerPoints;
+
 	private ScoreboardManager manager = Bukkit.getScoreboardManager();
 	private Scoreboard board = manager.getMainScoreboard();
 	private Team team;
@@ -111,6 +123,11 @@ public class Game {
 		this.players = Tool.shuffleArray(new ArrayList<Player>(Bukkit.getOnlinePlayers()));
 		this.playersAlive = Tool.shuffleArray(new ArrayList<Player>(players));
 		this.deadPlayers = new ArrayList<>(0);
+
+		this.playerPoints = new HashMap<Player, Float>(0);
+		for (Player p: this.players) {
+			this.playerPoints.put(p, 0f);
+		}
 
 		this.players.get(0).getWorld().setDifficulty(Difficulty.PEACEFUL);
 
@@ -135,6 +152,10 @@ public class Game {
 
 		plugin = (MurderPlugin) Tool.getPlugin();
 		Game.setGame(this);
+	}
+
+	public void addPointToPlayer(Player p, float points) {
+		playerPoints.put(p, playerPoints.get(p)+points);
 	}
 
 	public ArrayList<Player> getPlayers() {
@@ -245,24 +266,11 @@ public class Game {
 		guardian.getInventory().setItem(8, arrowStack);
 	}
 
-	public void runnersWin(){
-		Tool.tp(ChatColor.GREEN, "Innocents win !", ChatColor.WHITE, "The Murderer was "+ChatColor.RED+""+game.getMurderer().getName());
-
-		plugin.getStatistics().endGame(players, murderer, guardian, Game.MURDERER_WINS);
-
-        this.teleportPlayersToSpawn();
-		this.clearPlayers(); 
-		this.playerInAdventureMode();
-
-		plugin.getStatistics().incrementGameCount();
-
-		Game.stopGlowingRunnable();
-        Game.setGame(null);
-	}
-
 	public void badVictim(Player innocent){
 		Tool.pp(ChatColor.BLUE + innocent.getName()+" was innocent");
 		Tool.tp(ChatColor.WHITE, innocent.getName()+""+ChatColor.RED+" was innocent", this.guardian);
+
+		addPointToPlayer(guardian, Game.POINTS_GUARDIAN_KILLS_INNOCENT);
 		this.guardian.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 5*20, 255, true, false));
 	}
 
@@ -288,6 +296,14 @@ public class Game {
 		killed.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 3*20, 255, true, false));
 		Tool.tp(ChatColor.RED, "You're dead", ChatColor.WHITE, "You have been killed", killed);
 
+		if (killer == this.murderer) {
+			if (killed != this.guardian) {
+				addPointToPlayer(this.murderer, Game.POINTS_MURDERER_KILL);
+			} else if (this.guardian.getInventory().contains(Material.CROSSBOW)) {
+				addPointToPlayer(this.murderer, Game.POINTS_MURDERER_KILL_GUARDIAN);
+			}
+		}
+
 		if (!deadPlayers.contains(killed)){
 			deadPlayers.add(killed);
 			playersAlive.remove(killed);
@@ -299,20 +315,42 @@ public class Game {
 		}
 	}
 
-	public void playerKilled(Player killed){
-		playerKilled(killed, null);
+	public void runnersWin(){
+		Tool.tp(ChatColor.GREEN, "Innocents win !", ChatColor.WHITE, "The Murderer was "+ChatColor.RED+""+game.getMurderer().getName());
+
+		addPointToPlayer(guardian, Game.POINTS_GUARDIAN_KILL_MURDERER);
+		for (Player p: players) {
+			if (p != murderer) {
+				addPointToPlayer(p, Game.POINTS_INNOCENTS_WIN);
+			}
+		}
+		plugin.getStatistics().endGame(players, murderer, guardian, Game.INNOCENT_WINS);
+		plugin.getStatistics().incrementGameCount();
+		for (Player p : players) {
+			plugin.getStatistics().addPlayerPoints(p, playerPoints.get(p).intValue());
+		}
+
+        this.teleportPlayersToSpawn();
+		this.clearPlayers(); 
+		this.playerInAdventureMode();
+
+		Game.stopGlowingRunnable();
+        Game.setGame(null);
 	}
 
 	public void murdererWins(){
 		Tool.tp(ChatColor.RED, "Murderer wins !", ChatColor.WHITE, "The Murderer was "+ChatColor.RED+""+game.getMurderer().getName());
 
+		addPointToPlayer(murderer, Game.POINTS_MURDERER_WINS);
 		plugin.getStatistics().endGame(players, murderer, guardian, Game.MURDERER_WINS);
+		plugin.getStatistics().incrementGameCount();
+		for (Player p : players) {
+			plugin.getStatistics().addPlayerPoints(p, playerPoints.get(p).intValue());
+		}
 
 		this.teleportPlayersToSpawn();
 		this.clearPlayers();
 		this.playerInAdventureMode();
-
-		plugin.getStatistics().incrementGameCount();
 
 		Game.stopGlowingRunnable();
 		Game.setGame(null);

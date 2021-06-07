@@ -55,6 +55,9 @@ public class Commands {
 				case "stats":
 				case "getOwnStats":
 					return getPlayerStats(sender, cmd, label);
+				case "clear":
+				case "clearPoints":
+					return clearPoints(sender, cmd, label);
 			}
 		}
 
@@ -280,7 +283,22 @@ public class Commands {
 			MurderPlugin plugin = (MurderPlugin) Tool.getPlugin();
 			PlayerStatistics playerStats = plugin.getStatistics().getPlayerStats(player);
 
-			Tool.pp(playerStats.getStringSave(), player);
+			Tool.pp(playerStats.getDisplay(), player);
+		}
+		
+		return true;
+	}
+
+	public static boolean clearPoints(CommandSender sender, Command cmd, String label) {
+		
+		if (sender instanceof Player) {
+			Player player = (Player) sender;
+
+			MurderPlugin plugin = (MurderPlugin) Tool.getPlugin();
+			PlayerStatistics playerStats = plugin.getStatistics().getPlayerStats(player);
+			playerStats.clearPoints();
+
+			Tool.pp("Current Point cleared", player);
 		}
 		
 		return true;
