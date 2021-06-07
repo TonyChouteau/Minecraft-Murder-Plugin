@@ -15,6 +15,7 @@ import java.io.File;
 import org.bukkit.Bukkit;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.Difficulty;
 import org.bukkit.plugin.PluginManager;
 
 import org.bukkit.event.Listener;
@@ -49,6 +50,8 @@ public class MurderPlugin extends JavaPlugin {
 
 		getLogger().info("Le plugin s'est bien chargé.");
 		Tool.setPlugin(this);
+
+		Bukkit.getWorlds().get(0).setDifficulty(Difficulty.PEACEFUL);
 
 		makePluginDirectory();
 
