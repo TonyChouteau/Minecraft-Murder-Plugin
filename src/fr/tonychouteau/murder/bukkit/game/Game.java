@@ -19,7 +19,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.ChatColor;
-
+import org.bukkit.Difficulty;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffectType;
 
@@ -110,7 +110,7 @@ public class Game {
 		this.players = Tool.shuffleArray(new ArrayList<Player>(Bukkit.getOnlinePlayers()));
 		this.playersAlive = Tool.shuffleArray(new ArrayList<Player>(players));
 		this.deadPlayers = new ArrayList<>(0);
-
+		
 		if (!notEnoughtPlayer()) {
 			this.murderer = players.get(0);
 			this.guardian = players.get(1);

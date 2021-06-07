@@ -146,7 +146,7 @@ public class Commands {
 
 		Game.setGlowingRunnable(glowingRunnable);
 
-		Tool.interval(3 * 60, 1000000, glowingRunnable);
+		Tool.interval(3 * 60, -1, glowingRunnable);
 
 		Tool.timeout(5, new Runnable() {
 			@Override

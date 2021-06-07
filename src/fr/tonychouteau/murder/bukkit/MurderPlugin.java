@@ -4,6 +4,7 @@ package fr.tonychouteau.murder.bukkit;
 import fr.tonychouteau.murder.bukkit.listener.PlayerListener;
 import fr.tonychouteau.murder.bukkit.commands.Commands;
 import fr.tonychouteau.murder.bukkit.util.Tool;
+import fr.tonychouteau.murder.bukkit.util.MyRunnable;
 
 // Java Import
 import java.util.ArrayList;
@@ -35,13 +36,33 @@ public class MurderPlugin extends JavaPlugin {
 		getLogger().info("Le plugin s'est bien chargé.");
 		Tool.setPlugin(this);
 
+		makePluginDirectory();
+
+		handlePlayerOutsideWorld();
+	}
+
+	private void makePluginDirectory() {
 		File file = new File("./plugins/MurderPlugin");
 		file.mkdir();
 	}
 
+	private void handlePlayerOutsideWorld() {
+		Tool.interval(2, -1, new MyRunnable() {
+			@Override
+			public void run() {
+				ArrayList<Player> players = new ArrayList(Bukkit.getOnlinePlayers());
+				for (Player p: players) {
+					int y = p.getLocation().getBlockY();
+					if (y < 0) {
+						p.teleport(p.getWorld().getSpawnLocation());
+					}
+				}
+			}
+		});
+	}
+
 	@Override
 	public void onDisable() {
-
 		getLogger().info("Le plugin s'est bien arrêté.");
 	}
 

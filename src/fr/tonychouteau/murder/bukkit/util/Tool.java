@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 // Bukkit Import
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -107,7 +109,7 @@ public class Tool {
 		return array;
 	}
 
-	public static void interval(int seconds, int times, MyRunnable runObject) {
+	public static void interval(int seconds,int times, MyRunnable runObject) {
 		runObject.setTimes(times);
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(getPlugin(), new Runnable() {
 
@@ -117,6 +119,8 @@ public class Tool {
 					runObject.run();
 					if (times > 0) {
 						interval(seconds, times - 1, runObject);
+					} else if (times == -1) {
+						interval(seconds, -1, runObject);
 					}
 				}
 			}
