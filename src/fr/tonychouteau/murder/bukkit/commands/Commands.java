@@ -234,17 +234,17 @@ public class Commands {
 
 		boolean result = Tool.saveString("murder_plugin.save", saveString);
 		if (result) {
-			Tool.pp("Saved successfully");
+			Tool.pp(ChatColor.GREEN + "Spawnpoints saved successfully");
 			return true;
 		} else {
-			Tool.pp("Spawnpoints can't be saved");
+			Tool.pp(ChatColor.RED + "Spawnpoints can't be saved");
 			return false;
 		}
 	}
 
 	public static boolean loadSpawnpoints(CommandSender sender, Command cmd, String label) {
 		String fileContent = Tool.loadString("murder_plugin.save");
-		
+
 		if (fileContent == null) {
 			Tool.pp(ChatColor.RED + "An error occurred while loading the backup.");
 			return false;

@@ -8,6 +8,12 @@ import fr.tonychouteau.murder.bukkit.util.Tool;
 // Bukkit Import
 
 public class Stats {
+	int gameCount = 0;
+	
 	public Stats() {
+		loadPluginStats();
+	}
+
+	private void loadPluginStats() {
 	}
 }
