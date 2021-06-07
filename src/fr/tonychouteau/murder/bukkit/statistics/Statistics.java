@@ -7,7 +7,9 @@ import fr.tonychouteau.murder.bukkit.game.Game;
 // Java Import
 import java.util.Map;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.ArrayList;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 // Bukkit Import
@@ -99,7 +101,7 @@ public class Statistics {
 		String content = Tool.loadString("players.stats");
 
 		if (content == null || content.equals("")) {
-			for (Player p: Bukkit.getOnlinePlayers()) {
+			for (Player p : Bukkit.getOnlinePlayers()) {
 				addPlayer(p);
 			}
 			return;
@@ -118,9 +120,44 @@ public class Statistics {
 		for (String name : playerStats.keySet()) {
 			PlayerStatistics stats = playerStats.get(name);
 
-			saveString += name+":"+stats.getStringSave()+"-";
+			saveString += name + ":" + stats.getStringSave() + "-";
 		}
 
 		return Tool.saveString("players.stats", saveString);
+	}
+
+	public void clearCurrentPoints() {
+		for (String name : playerStats.keySet()) {
+			playerStats.get(name).clearPoints();
+		}
+		savePlayersStats();
+	}
+
+	public String getScoreboard() {
+
+		Map<String, Integer> currentPoints = new HashMap<String, Integer>(0);
+		Map<String, Integer> totalPoints = new HashMap<String, Integer>(0);
+		for (String name : playerStats.keySet()) {
+			currentPoints.put(name, playerStats.get(name).currentPoints);
+			totalPoints.put(name, playerStats.get(name).totalPoints);
+		}
+
+		ArrayList<Entry<String, Integer>> sortedCurrentScore = Tool.sortByValue(currentPoints);
+		ArrayList<Entry<String, Integer>> sortedTotalScore = Tool.sortByValue(totalPoints);
+
+		String currentScoreboard = "\n=================================\n \n - Current Points -\n ";
+		String totalScoreboard = "\n \n - Total Points -\n ";
+		for (int i = 0; i < Math.min(5, sortedCurrentScore.size()); i++) {
+			int index = i+1;
+			Entry<String, Integer> entry = sortedCurrentScore.get(i);
+			currentScoreboard += "\n" + index + Tool.order(index) + " - " + entry.getKey() + " : " + entry.getValue() + "pt"
+					+ (entry.getValue() > 1 ? "s" : "");
+			entry = sortedTotalScore.get(i);
+			totalScoreboard += "\n" + index + Tool.order(index) + " - " + entry.getKey() + " : " + entry.getValue() + "pt"
+					+ (entry.getValue() > 1 ? "s" : "");
+		}
+		totalScoreboard += "\n \n=================================";
+
+		return currentScoreboard + totalScoreboard;
 	}
 }

@@ -37,7 +37,7 @@ public class PlayerStatistics {
 	}
 
 	public String getDisplay() {
-		return "=================================\nGame count : " + gameCount + "\nGame count as murderer : "
+		return "\n=================================\nGame count : " + gameCount + "\nGame count as murderer : "
 				+ gameCountAsMurderer + "\nWin as murderer : " + winAsMurderer + "\nWin as innocent : " + winAsInnocent
 				+ "\nWin as guardian : " + winAsGuardian + "\nCurrent points : " + currentPoints + "\nTotal points : "
 				+ totalPoints + "\n=================================";

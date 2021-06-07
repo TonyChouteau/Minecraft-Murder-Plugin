@@ -6,6 +6,8 @@ package fr.tonychouteau.murder.bukkit.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import java.io.File;
 import java.io.IOException;
@@ -157,6 +159,22 @@ public class Tool {
 		} catch (IOException e) {
 			Tool.pc("Error while saving in " + filename);
 			return false;
+		}
+	}
+
+    public static <K, V extends Comparable<? super V>> ArrayList<Entry<K, V>> sortByValue(Map<K, V> map) {
+        ArrayList<Entry<K, V>> list = new ArrayList<>(map.entrySet());
+        list.sort(Entry.comparingByValue());
+		Collections.reverse(list);
+
+        return list;
+    }
+
+	public static String order(int i) {
+		if (i == 1) {
+			return "er";
+		} else {
+			return "e";
 		}
 	}
 }

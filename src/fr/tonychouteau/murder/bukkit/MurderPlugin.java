@@ -57,6 +57,7 @@ public class MurderPlugin extends JavaPlugin {
 
 		handlePlayerOutsideWorld();
 
+		Commands.loadSpawnpoints(null, null, null);
 		statistics = new Statistics();
 	}
 
