@@ -27,7 +27,6 @@ import org.bukkit.command.Command;
 // Main Class
 public class MurderPlugin extends JavaPlugin {
 
-	public String version = "v1.4";
 	private Statistics statistics = null;
 
 	// Getters & Setters

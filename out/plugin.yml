@@ -1,13 +1,13 @@
 main: fr.tonychouteau.murder.bukkit.MurderPlugin
 name: MurderPlugin
-version: 1.5
+version: 1.6
 description: Murder
 author: Tony Chouteau
 api-version: 1.13
 commands:
   murder:
     description: Commandes du plugin murder
-    usage: /murder help | spawnpoint | start | stop | addSpawnpointHere | saveSpawnpoints | loadSpawnpoints
+    usage: /murder help | spawnpoint | start | stop | addSpawnpointHere | saveSpawnpoints | loadSpawnpoints | getPluginInfo | getOwnStats | clearPoints | scoreboard
     permission: permission.murder
     aliases:
       - muder help
@@ -17,9 +17,13 @@ commands:
       - murder addSpawnpointHere
       - murder saveSpawnpoints
       - murder loadSpawnpoints
+      - murder getPluginInfo
+      - murder getOwnStats
+      - murder clearPoints
+      - murder scoreboard
   m:
     description: Commandes du plugin murder
-    usage: /m help | sp | start | stop | add | save | load
+    usage: /m help | sp | start | stop | add | save | load | plugin | stats | clear | score
     permission: permission.murder
     aliases:
       - m help
@@ -29,3 +33,7 @@ commands:
       - m add
       - m save
       - m load
+      - m plugin
+      - m stats
+      - m clear
+      - m score

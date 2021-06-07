@@ -273,7 +273,7 @@ public class Commands {
 
 		MurderPlugin plugin = (MurderPlugin) Tool.getPlugin();
 		int gameCount = plugin.getStatistics().getGameCount();
-		Tool.pp("MurderPlugin " + plugin.version + " | Game count: " + gameCount);
+		Tool.pp("MurderPlugin v" + plugin.getDescription().getVersion() + " | Game count: " + gameCount);
 
 		return true;
 	}
