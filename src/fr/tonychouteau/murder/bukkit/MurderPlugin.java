@@ -18,7 +18,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
 
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -67,7 +66,7 @@ public class MurderPlugin extends JavaPlugin {
 		Tool.interval(1, -1, new MyRunnable() {
 			@Override
 			public void run() {
-				ArrayList<Player> players = new ArrayList(Bukkit.getOnlinePlayers());
+				ArrayList<Player> players = new ArrayList<Player>(Bukkit.getOnlinePlayers());
 				for (Player p: players) {
 					int y = p.getLocation().getBlockY();
 					if (y < 0) {

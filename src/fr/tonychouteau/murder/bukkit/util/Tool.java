@@ -1,11 +1,8 @@
 package fr.tonychouteau.murder.bukkit.util;
 
 // Own import
-import fr.tonychouteau.murder.bukkit.game.Game;
-import fr.tonychouteau.murder.bukkit.util.MyRunnable;
 
 // Java Import
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -15,12 +12,9 @@ import java.io.IOException;
 import java.io.FileWriter;
 import java.io.FileReader;
 
-import javax.annotation.Nullable;
-
 // Bukkit Import
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.entity.Player;
@@ -39,7 +33,7 @@ public class Tool {
 
 	public static boolean isInteger(String str) {
 		try {
-			int x = Integer.parseInt(str);
+			Integer.parseInt(str);
 			return true;
 		} catch (NumberFormatException e) {
 			return false;
@@ -61,7 +55,6 @@ public class Tool {
 	}
 
 	public static void pp(String str) {
-		Game game = Game.getGame();
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			p.sendMessage(str);
 		}
@@ -106,6 +99,7 @@ public class Tool {
 		player.sendTitle(color + str, color2 + str2, i * 20, d * 20, o * 20);
 	}
 
+	@SuppressWarnings("rawtypes")
 	public static ArrayList shuffleArray(ArrayList array) {
 		Collections.shuffle(array);
 		return array;

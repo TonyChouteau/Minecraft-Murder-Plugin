@@ -17,7 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
-// Class Defintiion
+// Class Defintion
 public class PlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {

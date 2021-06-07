@@ -9,14 +9,9 @@ import fr.tonychouteau.murder.bukkit.statistics.PlayerStatistics;
 
 // Java Import
 import java.util.ArrayList;
-import java.io.File;
-import java.io.IOException;
 import java.util.Map;
-import java.io.FileWriter;
-import java.io.FileReader;
 
 // Bukkit Import
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
@@ -92,12 +87,12 @@ public class Commands {
 
 		game = new Game();
 
-		if (game.notEnoughtPlayer()) {
+		if (game.notEnoughPlayer()) {
 			Tool.pc(ChatColor.RED + "Error: The murder game can only start if there are at least 2 players");
 			Tool.pp(ChatColor.RED + "Error: The murder game can only start if there are at least 2 players");
 			Game.setGame(null);
 			return true;
-		} else if (game.notEnoughtSpawnPoint()) {
+		} else if (game.notEnoughSpawnPoint()) {
 			Tool.pc(ChatColor.RED
 					+ "Error: Please, set spawnpoint(s) using /m spawnpoint <id> <x> <y> <z> to start a game");
 			Tool.pp(ChatColor.RED

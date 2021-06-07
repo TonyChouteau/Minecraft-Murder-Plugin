@@ -3,7 +3,6 @@ package fr.tonychouteau.murder.bukkit.statistics;
 // Own import
 import fr.tonychouteau.murder.bukkit.util.Tool;
 import fr.tonychouteau.murder.bukkit.game.Game;
-import fr.tonychouteau.murder.bukkit.statistics.PlayerStatistics;
 
 // Java Import
 import java.util.Map;
@@ -17,7 +16,7 @@ import org.bukkit.entity.Player;
 public class Statistics {
 
 	private int gameCount = 0;
-	private Map<String, PlayerStatistics> playerStats = new HashMap(0); // Pseudo -> Stats
+	private Map<String, PlayerStatistics> playerStats = new HashMap<String, PlayerStatistics>(0); // Pseudo -> Stats
 
 	// Getters
 	public int getGameCount() {

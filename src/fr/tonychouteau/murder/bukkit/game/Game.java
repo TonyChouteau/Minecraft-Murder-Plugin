@@ -6,22 +6,17 @@ import fr.tonychouteau.murder.bukkit.MurderPlugin;
 import fr.tonychouteau.murder.bukkit.util.MyRunnable;
 
 // Java Import
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.UUID;
 
-import java.lang.InterruptedException;
-
 // Bukkit Import
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffectType;
 
 import org.bukkit.inventory.ItemStack;
@@ -110,6 +105,7 @@ public class Game {
 
 	private MurderPlugin plugin = null;
 
+	@SuppressWarnings("unchecked")
 	public Game() {
 
 		this.players = Tool.shuffleArray(new ArrayList<Player>(Bukkit.getOnlinePlayers()));
@@ -118,7 +114,7 @@ public class Game {
 
 		this.players.get(0).getWorld().setDifficulty(Difficulty.PEACEFUL);
 
-		if (!notEnoughtPlayer()) {
+		if (!notEnoughPlayer()) {
 			this.murderer = players.get(0);
 			this.guardian = players.get(1);
 		}
@@ -162,8 +158,9 @@ public class Game {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void spawnPlayers(){
-		ArrayList<Location> spawnpointsLocation = Tool.shuffleArray(new ArrayList<>(spawnpoints.values()));
+		ArrayList<Location> spawnpointsLocation = Tool.shuffleArray(new ArrayList<Location>(spawnpoints.values()));
 		int i = 0;
 		for (Player p : this.players){
 			Location l = spawnpointsLocation.get(i%spawnpointsLocation.size());
@@ -187,7 +184,7 @@ public class Game {
 		return guardian;
 	}
 
-	public boolean notEnoughtPlayer() {
+	public boolean notEnoughPlayer() {
 		if (players.size() < 2) {
 			return true;
 		} else {
@@ -195,7 +192,7 @@ public class Game {
 		}
 	}
 
-	public boolean notEnoughtSpawnPoint() {
+	public boolean notEnoughSpawnPoint() {
 		ArrayList<Location> spawnpointsLocation = new ArrayList<>(spawnpoints.values());
 		if (spawnpointsLocation.size() < 1) {
 			return true;
@@ -252,7 +249,7 @@ public class Game {
 		Tool.tp(ChatColor.GREEN, "Innocents win !", ChatColor.WHITE, "The Murderer was "+ChatColor.RED+""+game.getMurderer().getName());
 
 		plugin.getStatistics().endGame(players, murderer, guardian, Game.MURDERER_WINS);
-		
+
         this.teleportPlayersToSpawn();
 		this.clearPlayers(); 
 		this.playerInAdventureMode();
