@@ -2,10 +2,10 @@ package fr.tonychouteau.murder.bukkit;
 
 // My Package
 import fr.tonychouteau.murder.bukkit.listener.PlayerListener;
+import fr.tonychouteau.murder.bukkit.statistics.Stats;
 import fr.tonychouteau.murder.bukkit.commands.Commands;
 import fr.tonychouteau.murder.bukkit.util.Tool;
 import fr.tonychouteau.murder.bukkit.util.MyRunnable;
-import fr.tonychouteau.murder.bukkit.scoreboards.Stats;
 
 // Java Import
 import java.util.ArrayList;

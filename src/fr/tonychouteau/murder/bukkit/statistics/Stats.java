@@ -1,4 +1,4 @@
-package fr.tonychouteau.murder.bukkit.scoreboards;
+package fr.tonychouteau.murder.bukkit.statistics;
 
 // Own import
 import fr.tonychouteau.murder.bukkit.util.Tool;
