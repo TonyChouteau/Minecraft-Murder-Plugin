@@ -33,4 +33,4 @@ The "/m stop" command will stop the game and teleport all player to the map spaw
 1.2 - Glowing \
 1.3 - Tp at spawn if player falling out of world + difficulty peaceful auto \
 1.4 - Add statistics \
-1.5 - Points \
+1.5 - Points
