@@ -5,6 +5,7 @@ import fr.tonychouteau.murder.bukkit.util.Tool;
 import fr.tonychouteau.murder.bukkit.util.MyRunnable;
 import fr.tonychouteau.murder.bukkit.MurderPlugin;
 import fr.tonychouteau.murder.bukkit.game.Game;
+import fr.tonychouteau.murder.bukkit.statistics.PlayerStatistics;
 
 // Java Import
 import java.util.ArrayList;
@@ -53,9 +54,12 @@ public class Commands {
 				case "loadSpawnpoints":
 				case "load":
 					return loadSpawnpoints(sender, cmd, label);
-				case "stats":
-				case "getStats":
+				case "plugin":
+				case "getPluginInfo":
 					return getStats(sender, cmd, label);
+				case "stats":
+				case "getOwnStats":
+					return getPlayerStats(sender, cmd, label);
 			}
 		}
 
@@ -240,7 +244,7 @@ public class Commands {
 	public static boolean loadSpawnpoints(CommandSender sender, Command cmd, String label) {
 		String fileContent = Tool.loadString("murder_plugin.save");
 
-		if (fileContent == null) {
+		if (fileContent == null || fileContent.equals("")) {
 			Tool.pp(ChatColor.RED + "An error occurred while loading the backup.");
 			return false;
 		}
@@ -265,15 +269,25 @@ public class Commands {
 	}
 
 	public static boolean getStats(CommandSender sender, Command cmd, String label) {
-		String gameCount = Tool.loadString("plugin.stats");
 
 		MurderPlugin plugin = (MurderPlugin) Tool.getPlugin();
-		if (gameCount == null) {
-			Tool.pp("MurderPlugin " + plugin.version + " | Error while loading stats");
-		} else {
-			Tool.pp("MurderPlugin " + plugin.version + " | Game count: " + Integer.parseInt(gameCount));
-		}
+		int gameCount = plugin.getStatistics().getGameCount();
+		Tool.pp("MurderPlugin " + plugin.version + " | Game count: " + gameCount);
 
+		return true;
+	}
+
+	public static boolean getPlayerStats(CommandSender sender, Command cmd, String label) {
+
+		if (sender instanceof Player) {
+			Player player = (Player) sender;
+
+			MurderPlugin plugin = (MurderPlugin) Tool.getPlugin();
+			PlayerStatistics playerStats = plugin.getStatistics().getPlayerStats(player);
+
+			Tool.pp(playerStats.getStringSave(), player);
+		}
+		
 		return true;
 	}
 }

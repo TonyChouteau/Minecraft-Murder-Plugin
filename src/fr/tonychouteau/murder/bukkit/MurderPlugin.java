@@ -27,7 +27,7 @@ import org.bukkit.command.Command;
 // Main Class
 public class MurderPlugin extends JavaPlugin {
 
-	public String version = "v1.3";
+	public String version = "v1.4";
 	private Statistics statistics = null;
 
 	// Getters & Setters
@@ -64,7 +64,7 @@ public class MurderPlugin extends JavaPlugin {
 	}
 
 	private void handlePlayerOutsideWorld() {
-		Tool.interval(2, -1, new MyRunnable() {
+		Tool.interval(1, -1, new MyRunnable() {
 			@Override
 			public void run() {
 				ArrayList<Player> players = new ArrayList(Bukkit.getOnlinePlayers());

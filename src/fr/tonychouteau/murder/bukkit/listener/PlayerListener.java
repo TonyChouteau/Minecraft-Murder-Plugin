@@ -3,12 +3,12 @@ package fr.tonychouteau.murder.bukkit.listener;
 // My Package
 import fr.tonychouteau.murder.bukkit.util.Tool;
 import fr.tonychouteau.murder.bukkit.game.Game;
+import fr.tonychouteau.murder.bukkit.MurderPlugin;
 
 // Bukkit Import
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -16,17 +16,15 @@ import org.bukkit.event.EventHandler;
 
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-import org.bukkit.ChatColor;
-
-import org.bukkit.entity.Projectile;
 
 // Class Defintiion
 public class PlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
-		p.sendMessage("Bienvenue sur le serveur, " + e.getPlayer().getName() + " !");
+		p.sendMessage("Bienvenue sur le serveur, " + p.getName() + " !");
 		p.setGameMode(GameMode.ADVENTURE);
+		((MurderPlugin)Tool.getPlugin()).getStatistics().addPlayer(p);
 	}
 
 	@EventHandler

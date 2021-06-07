@@ -46,6 +46,8 @@ import org.bukkit.scoreboard.Team.OptionStatus;
 
 // Class Definition
 public class Game {
+	public static int INNOCENT_WINS = 0;
+	public static int MURDERER_WINS = 1;
 
 	private static Game game = null;
 	private static Map<Integer, Location> spawnpoints = new HashMap<>(0);
@@ -249,6 +251,8 @@ public class Game {
 	public void runnersWin(){
 		Tool.tp(ChatColor.GREEN, "Innocents win !", ChatColor.WHITE, "The Murderer was "+ChatColor.RED+""+game.getMurderer().getName());
 
+		plugin.getStatistics().endGame(players, murderer, guardian, Game.MURDERER_WINS);
+		
         this.teleportPlayersToSpawn();
 		this.clearPlayers(); 
 		this.playerInAdventureMode();
@@ -305,11 +309,14 @@ public class Game {
 	public void murdererWins(){
 		Tool.tp(ChatColor.RED, "Murderer wins !", ChatColor.WHITE, "The Murderer was "+ChatColor.RED+""+game.getMurderer().getName());
 
+		plugin.getStatistics().endGame(players, murderer, guardian, Game.MURDERER_WINS);
+
 		this.teleportPlayersToSpawn();
 		this.clearPlayers();
 		this.playerInAdventureMode();
 
 		plugin.getStatistics().incrementGameCount();
+
 		Game.stopGlowingRunnable();
 		Game.setGame(null);
 	}
