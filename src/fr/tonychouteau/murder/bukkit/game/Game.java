@@ -110,7 +110,9 @@ public class Game {
 		this.players = Tool.shuffleArray(new ArrayList<Player>(Bukkit.getOnlinePlayers()));
 		this.playersAlive = Tool.shuffleArray(new ArrayList<Player>(players));
 		this.deadPlayers = new ArrayList<>(0);
-		
+
+		this.players.get(0).getWorld().setDifficulty(Difficulty.PEACEFUL);
+
 		if (!notEnoughtPlayer()) {
 			this.murderer = players.get(0);
 			this.guardian = players.get(1);
