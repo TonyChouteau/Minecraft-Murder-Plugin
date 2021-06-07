@@ -27,11 +27,23 @@ import org.bukkit.command.Command;
 // Main Class
 public class MurderPlugin extends JavaPlugin {
 
-	Statistics statistics = null;
+	public String version = "v1.3";
+	private Statistics statistics = null;
+
+	// Getters & Setters
+
+	public Statistics getStatistics() {
+		return this.statistics;
+	}
+
+	public void setStatistics(Statistics statistics) {
+		this.statistics = statistics;
+	}
+
+	// Entry Point
 
 	@Override
 	public void onEnable() {
-
 		Listener l = new PlayerListener();
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(l, this);

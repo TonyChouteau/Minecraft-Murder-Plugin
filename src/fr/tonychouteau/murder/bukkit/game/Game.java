@@ -2,6 +2,7 @@ package fr.tonychouteau.murder.bukkit.game;
 
 // My Package
 import fr.tonychouteau.murder.bukkit.util.Tool;
+import fr.tonychouteau.murder.bukkit.MurderPlugin;
 import fr.tonychouteau.murder.bukkit.util.MyRunnable;
 
 // Java Import
@@ -105,6 +106,8 @@ public class Game {
 	private Scoreboard board = manager.getMainScoreboard();
 	private Team team;
 
+	private MurderPlugin plugin = null;
+
 	public Game() {
 
 		this.players = Tool.shuffleArray(new ArrayList<Player>(Bukkit.getOnlinePlayers()));
@@ -132,6 +135,7 @@ public class Game {
 		}
 		team.setOption(Option.NAME_TAG_VISIBILITY, OptionStatus.NEVER);
 
+		plugin = (MurderPlugin) Tool.getPlugin();
 		Game.setGame(this);
 	}
 
@@ -249,6 +253,8 @@ public class Game {
 		this.clearPlayers(); 
 		this.playerInAdventureMode();
 
+		plugin.getStatistics().incrementGameCount();
+
 		Game.stopGlowingRunnable();
         Game.setGame(null);
 	}
@@ -303,6 +309,7 @@ public class Game {
 		this.clearPlayers();
 		this.playerInAdventureMode();
 
+		plugin.getStatistics().incrementGameCount();
 		Game.stopGlowingRunnable();
 		Game.setGame(null);
 	}

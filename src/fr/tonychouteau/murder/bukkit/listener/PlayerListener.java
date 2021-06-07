@@ -26,6 +26,7 @@ public class PlayerListener implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
 		p.sendMessage("Bienvenue sur le serveur, " + e.getPlayer().getName() + " !");
+		p.setGameMode(GameMode.ADVENTURE);
 	}
 
 	@EventHandler

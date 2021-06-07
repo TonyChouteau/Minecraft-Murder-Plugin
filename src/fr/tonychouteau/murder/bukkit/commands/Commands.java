@@ -3,7 +3,7 @@ package fr.tonychouteau.murder.bukkit.commands;
 // My Package
 import fr.tonychouteau.murder.bukkit.util.Tool;
 import fr.tonychouteau.murder.bukkit.util.MyRunnable;
-
+import fr.tonychouteau.murder.bukkit.MurderPlugin;
 import fr.tonychouteau.murder.bukkit.game.Game;
 
 // Java Import
@@ -53,6 +53,9 @@ public class Commands {
 				case "loadSpawnpoints":
 				case "load":
 					return loadSpawnpoints(sender, cmd, label);
+				case "stats":
+				case "getStats":
+					return getStats(sender, cmd, label);
 			}
 		}
 
@@ -62,20 +65,12 @@ public class Commands {
 	public static void help(CommandSender sender, Command cmd, String label) {
 		try {
 			Player player = (Player) sender;
-			Tool.pp(ChatColor.GREEN
-					+ "/m start <nombre_de_joueurs>\n"
-					+ "   Lancer une partie\n"
-					+ "/m stop\n"
-					+ "   Arrete la partie en cours\n"
-					+ "/m spawnpoint | sp\n"
-					+ "   Ajoute un spawnpoint. /m spawnpoint|sp <id> <x> <y> <z>\n"
-					+ "/m addSpawnpointHere | add\n"
-					+ "   Ajoute un spawnpoint a l'endroit ou se trouve le joueur\n"
-					+ "/m saveSpawnpoints | save\n"
-					+ "   Save spawnpoints in a file\n"
-					+ "/m loadSpawnpoints | load\n"
-					+ "   Load spawnpoints from the save file\n",
-					player);
+			Tool.pp(ChatColor.GREEN + "/m start <nombre_de_joueurs>\n" + "   Lancer une partie\n" + "/m stop\n"
+					+ "   Arrete la partie en cours\n" + "/m spawnpoint | sp\n"
+					+ "   Ajoute un spawnpoint. /m spawnpoint|sp <id> <x> <y> <z>\n" + "/m addSpawnpointHere | add\n"
+					+ "   Ajoute un spawnpoint a l'endroit ou se trouve le joueur\n" + "/m saveSpawnpoints | save\n"
+					+ "   Save spawnpoints in a file\n" + "/m loadSpawnpoints | load\n"
+					+ "   Load spawnpoints from the save file\n", player);
 		} catch (Exception e) {
 			Tool.pc(ChatColor.GREEN
 					+ "/start <nombre_de_joueurs> \n    Lancer une partie\n/stop\n    Arrete la partie en cours\n/spawnpoint\n   Ajoute un spawnpoint. /spawnpoint <id> <x> <y> <z>");
@@ -255,7 +250,7 @@ public class Commands {
 			Game.getSpawnPoints().clear();
 		}
 		int count = 0;
-		for (String spawnpointData: spawnpointsData) {
+		for (String spawnpointData : spawnpointsData) {
 			String[] data = spawnpointData.split(":");
 			Location location = new Location(null, Integer.parseInt(data[0]), Integer.parseInt(data[1]),
 					Integer.parseInt(data[2]));
@@ -265,6 +260,19 @@ public class Commands {
 			count++;
 		}
 		Tool.pp(ChatColor.GREEN + "" + count + " spawnpoints loaded");
+
+		return true;
+	}
+
+	public static boolean getStats(CommandSender sender, Command cmd, String label) {
+		String gameCount = Tool.loadString("plugin.stats");
+
+		MurderPlugin plugin = (MurderPlugin) Tool.getPlugin();
+		if (gameCount == null) {
+			Tool.pp("MurderPlugin " + plugin.version + " | Error while loading stats");
+		} else {
+			Tool.pp("MurderPlugin " + plugin.version + " | Game count: " + Integer.parseInt(gameCount));
+		}
 
 		return true;
 	}
