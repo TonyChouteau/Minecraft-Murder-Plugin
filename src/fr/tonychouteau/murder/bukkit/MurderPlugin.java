@@ -2,7 +2,7 @@ package fr.tonychouteau.murder.bukkit;
 
 // My Package
 import fr.tonychouteau.murder.bukkit.listener.PlayerListener;
-import fr.tonychouteau.murder.bukkit.statistics.Stats;
+import fr.tonychouteau.murder.bukkit.statistics.Statistics;
 import fr.tonychouteau.murder.bukkit.commands.Commands;
 import fr.tonychouteau.murder.bukkit.util.Tool;
 import fr.tonychouteau.murder.bukkit.util.MyRunnable;
@@ -27,7 +27,7 @@ import org.bukkit.command.Command;
 // Main Class
 public class MurderPlugin extends JavaPlugin {
 
-	Stats stats = null;
+	Statistics statistics = null;
 
 	@Override
 	public void onEnable() {
@@ -43,7 +43,7 @@ public class MurderPlugin extends JavaPlugin {
 
 		handlePlayerOutsideWorld();
 
-		stats = new Stats();
+		statistics = new Statistics();
 	}
 
 	private void makePluginDirectory() {

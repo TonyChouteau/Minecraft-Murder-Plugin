@@ -7,10 +7,10 @@ import fr.tonychouteau.murder.bukkit.util.Tool;
 
 // Bukkit Import
 
-public class Stats {
+public class Statistics {
 	int gameCount = 0;
 	
-	public Stats() {
+	public Statistics() {
 		loadPluginStats();
 	}
 
