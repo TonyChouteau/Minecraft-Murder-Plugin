@@ -225,54 +225,47 @@ public class Commands {
 
 	public static boolean saveSpawnpoints(CommandSender sender, Command cmd, String label) {
 		Map<Integer, Location> spawnpoints = Game.getSpawnPoints();
-		try {
-			File file = new File("./plugins/MurderPlugin/murder_plugin.save");
-			file.createNewFile();
 
-			FileWriter fileWriter = new FileWriter(file);
-			String saveString = "";
-			for (int id : spawnpoints.keySet()) {
-				Location location = spawnpoints.get(id);
-
-				saveString += location.getBlockX() + ":" + location.getBlockY() + ":" + location.getBlockZ() + "-";
-			}
-			fileWriter.write(saveString);
-			fileWriter.close();
-
-			Tool.pp("Saved successfully");
-		} catch (IOException e) {
-			Tool.pp("Spawnpoints can't be saved");
+		String saveString = "";
+		for (int id : spawnpoints.keySet()) {
+			Location location = spawnpoints.get(id);
+			saveString += location.getBlockX() + ":" + location.getBlockY() + ":" + location.getBlockZ() + "-";
 		}
-		return true;
+
+		boolean result = Tool.saveString("murder_plugin.save", saveString);
+		if (result) {
+			Tool.pp("Saved successfully");
+			return true;
+		} else {
+			Tool.pp("Spawnpoints can't be saved");
+			return false;
+		}
 	}
 
 	public static boolean loadSpawnpoints(CommandSender sender, Command cmd, String label) {
-		File file = new File("./plugins/MurderPlugin/murder_plugin.save");
-
-		try (FileReader fr = new FileReader(file)) {
-			char[] chars = new char[(int) file.length()];
-			fr.read(chars);
-
-			String fileContent = new String(chars);
-			String[] spawnpointsData = fileContent.split("-");
-			if (spawnpointsData.length >= 1) {
-				Game.getSpawnPoints().clear();
-			}
-			int count = 0;
-			for (String spawnpointData: spawnpointsData) {
-				String[] data = spawnpointData.split(":");
-				Location location = new Location(null, Integer.parseInt(data[0]), Integer.parseInt(data[1]),
-						Integer.parseInt(data[2]));
-				int id = Game.getNextSpawnpointId();
-
-				Game.setSpawnpoint(id, location);
-				count++;
-			}
-			Tool.pp(ChatColor.GREEN + "" + count + " spawnpoints loaded");
-		} catch (IOException e) {
+		String fileContent = Tool.loadString("murder_plugin.save");
+		
+		if (fileContent == null) {
 			Tool.pp(ChatColor.RED + "An error occurred while loading the backup.");
 			return false;
 		}
+
+		String[] spawnpointsData = fileContent.split("-");
+		if (spawnpointsData.length >= 1) {
+			Game.getSpawnPoints().clear();
+		}
+		int count = 0;
+		for (String spawnpointData: spawnpointsData) {
+			String[] data = spawnpointData.split(":");
+			Location location = new Location(null, Integer.parseInt(data[0]), Integer.parseInt(data[1]),
+					Integer.parseInt(data[2]));
+			int id = Game.getNextSpawnpointId();
+
+			Game.setSpawnpoint(id, location);
+			count++;
+		}
+		Tool.pp(ChatColor.GREEN + "" + count + " spawnpoints loaded");
+
 		return true;
 	}
 }

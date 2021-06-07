@@ -10,6 +10,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.FileWriter;
+import java.io.FileReader;
+
 import javax.annotation.Nullable;
 
 // Bukkit Import
@@ -66,7 +71,6 @@ public class Tool {
 		player.sendMessage(str);
 	}
 
-	
 	public static void tp(ChatColor color, String str) {
 		tp(color, str, 1, 2, 1);
 	}
@@ -74,7 +78,6 @@ public class Tool {
 	public static void tp(ChatColor color, String str, Player player) {
 		tp(color, str, player, 1, 2, 1);
 	}
-
 
 	public static void tp(ChatColor color, String str, ChatColor color2, String str2) {
 		tp(color, str, color2, str2, 1, 2, 1);
@@ -84,7 +87,6 @@ public class Tool {
 		tp(color, str, color2, str2, player, 1, 2, 1);
 	}
 
-
 	public static void tp(ChatColor color, String str, int i, int d, int o) {
 		tp(color, str, ChatColor.GOLD, "", i, d, o);
 	}
@@ -93,14 +95,14 @@ public class Tool {
 		tp(color, str, ChatColor.GOLD, "", player, i, d, o);
 	}
 
-
 	public static void tp(ChatColor color, String str, ChatColor color2, String str2, int i, int d, int o) {
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			p.sendTitle(color + str, color2 + str2, i * 20, d * 20, o * 20);
 		}
 	}
 
-	public static void tp(ChatColor color, String str, ChatColor color2, String str2, Player player, int i, int d, int o) {
+	public static void tp(ChatColor color, String str, ChatColor color2, String str2, Player player, int i, int d,
+			int o) {
 		player.sendTitle(color + str, color2 + str2, i * 20, d * 20, o * 20);
 	}
 
@@ -109,7 +111,7 @@ public class Tool {
 		return array;
 	}
 
-	public static void interval(int seconds,int times, MyRunnable runObject) {
+	public static void interval(int seconds, int times, MyRunnable runObject) {
 		runObject.setTimes(times);
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(getPlugin(), new Runnable() {
 
@@ -129,5 +131,38 @@ public class Tool {
 
 	public static void timeout(int seconds, Runnable runObject) {
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(getPlugin(), runObject, (seconds * 20));
+	}
+
+	public static String loadString(String filename) {
+		File file = new File("./plugins/MurderPlugin/" + filename);
+
+		try (FileReader fr = new FileReader(file)) {
+			char[] chars = new char[(int) file.length()];
+			fr.read(chars);
+
+			Tool.pc("Save done in " + filename);
+			return new String(chars);
+		} catch (IOException e) {
+			Tool.pc("Error while saving statistics");
+			return null;
+		}
+	}
+
+	public static boolean saveString(String filename, String saveString) {
+		try {
+			File file = new File("./plugins/MurderPlugin/" + filename);
+			file.createNewFile();
+
+			FileWriter fileWriter = new FileWriter(file);
+
+			fileWriter.write(saveString);
+			fileWriter.close();
+
+			Tool.pc("Save done in " + filename);
+			return true;
+		} catch (IOException e) {
+			Tool.pc("Error while saving in " + filename);
+			return false;
+		}
 	}
 }

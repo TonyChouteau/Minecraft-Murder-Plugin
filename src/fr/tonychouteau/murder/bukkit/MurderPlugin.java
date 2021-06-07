@@ -5,6 +5,7 @@ import fr.tonychouteau.murder.bukkit.listener.PlayerListener;
 import fr.tonychouteau.murder.bukkit.commands.Commands;
 import fr.tonychouteau.murder.bukkit.util.Tool;
 import fr.tonychouteau.murder.bukkit.util.MyRunnable;
+import fr.tonychouteau.murder.bukkit.scoreboards.Stats;
 
 // Java Import
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ import org.bukkit.command.Command;
 // Main Class
 public class MurderPlugin extends JavaPlugin {
 
+	Stats stats = null;
+
 	@Override
 	public void onEnable() {
 
@@ -39,6 +42,8 @@ public class MurderPlugin extends JavaPlugin {
 		makePluginDirectory();
 
 		handlePlayerOutsideWorld();
+
+		stats = new Stats();
 	}
 
 	private void makePluginDirectory() {
